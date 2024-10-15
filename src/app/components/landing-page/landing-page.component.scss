@@ -1,0 +1,23 @@
+.loader {
+  border-top-color: #3498db;
+  animation: spin 1s ease-in-out infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+h1 {
+  color: #333;
+  font-weight: bold;
+}
+
+p {
+  color: #555;
+}
+
+input[type="file"] {
+  display: none;
+}

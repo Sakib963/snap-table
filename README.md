@@ -42,7 +42,7 @@ Welcome to **SnapTable**, a simple and powerful web app that allows you to easil
 
 Check out the app in action! Here’s how **SnapTable** can turn your boring CSV data into an interactive table:
 
-![Demo Image](https://placekitten.com/600/400)
+![Demo Image](https://github.com/user-attachments/assets/ef00f22f-2e37-4b4d-912d-63d2212677b8)
 
 ---
 

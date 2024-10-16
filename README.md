@@ -1,5 +1,10 @@
 # 🎉 SnapTable - CSV to Table Generator
 
+## Live Link
+
+You can view the live version of the SnapTable project here:  
+[https://sakib963.github.io/snap-table/](https://sakib963.github.io/snap-table/)
+
 Welcome to **SnapTable**, a simple and powerful web app that allows you to easily upload CSV files, select the columns you want to view, and see the data presented in a dynamic, customizable table format. No server required—just pure frontend magic with Angular! 🚀
 
 ---

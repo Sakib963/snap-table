@@ -6,6 +6,7 @@ import {
   ReactiveFormsModule,
   Validators,
 } from '@angular/forms';
+import { NzNotificationService } from 'ng-zorro-antd/notification';
 
 @Component({
   selector: 'app-landing-page',
@@ -22,9 +23,14 @@ export class LandingPageComponent implements OnInit {
 
   form!: FormGroup;
 
+  fileUploadAnimationUrl: any;
+
   @Output() actionEmitter = new EventEmitter<any>();
 
-  constructor(private _fb: FormBuilder) {}
+  constructor(
+    private _fb: FormBuilder,
+    private _notificationService: NzNotificationService
+  ) {}
 
   ngOnInit(): void {
     this.form = this.createForm();
@@ -56,12 +62,14 @@ export class LandingPageComponent implements OnInit {
           this.isLoading = false;
           this.isFileReadingComplete = true;
           this.actionEmitter.emit({ action: 'file_upload', data: jsonData });
-          console.log(jsonData);
         }, 2000);
       };
 
       reader.onerror = (error) => {
-        console.error('Error reading file: ', error);
+        this._notificationService.error(
+          'Error!',
+          'There was an error reading the file. Please try again.'
+        );
         this.isLoading = false;
         this.isFileReadingComplete = false;
       };
@@ -92,7 +100,7 @@ export class LandingPageComponent implements OnInit {
     let existingValue = this.form.controls['columns'].value;
     if (event.target.checked) {
       existingValue.push(column);
-      this.form.controls['columns'].setValue(existingValue)
+      this.form.controls['columns'].setValue(existingValue);
     } else {
       existingValue = existingValue.filter((c: any) => c !== column);
     }
@@ -101,7 +109,22 @@ export class LandingPageComponent implements OnInit {
   // Finalize the columns and emit the filtered data
   onSubmitSelection(event: Event) {
     event.preventDefault();
-    console.log(this.form.controls['columns'].value);
-    this.actionEmitter.emit({ action: 'columns', data: this.form.controls['columns'].value })
+    let columns = this.form.controls['columns'].value;
+    if (!columns.length) {
+      this._notificationService.warning(
+        'Warning!',
+        'You must choose at least one column before proceeding.'
+      );
+    } else {
+      this.actionEmitter.emit({
+        action: 'columns',
+        data: this.form.controls['columns'].value,
+        headers: this.headers
+      });
+    }
+  }
+
+  updateAllChecked(): void {
+    // this.indeterminate = false;
   }
 }

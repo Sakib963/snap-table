@@ -6,12 +6,15 @@ Welcome to **SnapTable**, a simple and powerful web app that allows you to easil
 
 ## 📑 Table of Contents
 
-- [Features](#features)
-- [How It Works](#how-it-works)
-- [Demo](#demo)
-- [Installation](#installation)
-- [Usage](#usage)
-- [Contributing](#contributing)
+- [✨ Features](#✨-features)
+- [💡 How It Works](#💡-how-it-works)
+- [🎥 Demo](#🎥-demo)
+- [⚡️ Installation](#⚡️-installation)
+- [🖱 Usage](#🖱-usage)
+- [🤝 Contributing](#🤝-contributing)
+- [🙏 Acknowledgments](#🙏-acknowledgments)
+- [🚀 Get Involved](#🚀-get-involved)
+
 
 ---
 
@@ -39,7 +42,7 @@ Welcome to **SnapTable**, a simple and powerful web app that allows you to easil
 
 Check out the app in action! Here’s how **SnapTable** can turn your boring CSV data into an interactive table:
 
-![Demo Image](https://placekitten.com/600/400) *(Placeholder for actual demo image)*
+![Demo Image](https://placekitten.com/600/400)
 
 ---
 
@@ -62,6 +65,18 @@ After the dependencies are installed, you can start the app using:
 ng serve
 ```
 Visit http://localhost:4200 to see the app in action.
+
+### 4. Setting Up Environment
+
+To configure environment variables, you need to create the `environment.ts` and `environment.prod.ts` files in the `src/environments` directory based on the `environment.example.ts` file.
+
+```bash
+cp src/environments/environment.example.ts src/environments/environment.ts
+cp src/environments/environment.prod.example.ts src/environments/environment.prod.ts
+```
+
+This way, you keep your sensitive data or environment-specific configurations out of the repository while providing a template for other developers to work with.
+
 
 ## 🖱 Usage
 

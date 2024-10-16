@@ -13,21 +13,22 @@ import { DisplayTablePageComponent } from 'src/app/components/display-table-page
 export class SnapTableComponent {
   isFileUploaded: boolean = false;
   parsedData: any[] = [];
-  filteredData: any[] = []; // Store the filtered data based on user's selection
-  selectedColumns: string[] = []; // To store the columns selected by the user
+  headers: any[] = [];
+  filteredData: any[] = [];
+  selectedColumns: string[] = [];
 
   handleActions(event: any) {
     if(event.action === 'file_upload') {
-      this.parsedData = event.data; // Save the parsed data
+      this.parsedData = event.data;
     } else if (event.action === 'columns') {
       this.onColumnsSelected(event.data)
+      this.headers = event.headers;
     }
   }
 
   // Receive the selected columns and filter the data accordingly
   onColumnsSelected(columns: any) {
     this.selectedColumns = columns;
-    console.log(this.selectedColumns, 'selectedColumns');
 
     // Filter the data based on selected columns
     this.filteredData = this.parsedData.map(row => {
@@ -37,7 +38,6 @@ export class SnapTableComponent {
       });
       return filteredRow;
     });
-    console.log(this.filteredData);
     this.isFileUploaded = true;
   }
 

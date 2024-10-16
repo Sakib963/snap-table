@@ -1,11 +1,11 @@
 <div *ngIf="!isFileUploaded">
-  <app-landing-page
-    (actionEmitter)="handleActions($event)"
-  ></app-landing-page>
+  <app-landing-page (actionEmitter)="handleActions($event)"></app-landing-page>
 </div>
 
 <div *ngIf="isFileUploaded">
   <app-display-table-page
+    [parsedData]="parsedData"
+    [headers]="headers"
     [data]="filteredData"
     [columns]="selectedColumns"
     (actionEmitter)="handleTableActions($event)"

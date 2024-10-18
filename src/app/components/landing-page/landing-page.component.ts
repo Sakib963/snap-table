@@ -1,31 +1,47 @@
-import { Component, EventEmitter, OnInit, Output } from '@angular/core';
+import {
+  Component,
+  ElementRef,
+  EventEmitter,
+  OnInit,
+  Output,
+  ViewChild,
+} from '@angular/core';
 import { CommonModule } from '@angular/common';
 import {
+  FormArray,
   FormBuilder,
+  FormControl,
   FormGroup,
+  FormsModule,
   ReactiveFormsModule,
   Validators,
 } from '@angular/forms';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
+import { NgZorroCustomModule } from 'src/app/library/ng-zorro-custom/ng-zorro-custom.module';
+import { NzCheckboxComponent } from 'ng-zorro-antd/checkbox';
 
 @Component({
   selector: 'app-landing-page',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule],
+  imports: [
+    CommonModule,
+    ReactiveFormsModule,
+    FormsModule,
+    NgZorroCustomModule,
+  ],
   templateUrl: './landing-page.component.html',
   styleUrls: ['./landing-page.component.scss'],
 })
 export class LandingPageComponent implements OnInit {
+  @Output() actionEmitter = new EventEmitter<any>();
   isLoading: boolean = false;
   isFileReadingComplete: boolean = false;
   headers: string[] = [];
   selectedColumns: string[] = [];
-
   form!: FormGroup;
 
-  fileUploadAnimationUrl: any;
-
-  @Output() actionEmitter = new EventEmitter<any>();
+  @ViewChild('inputChanger', { read: ElementRef })
+  fileInputChanger!: ElementRef;
 
   constructor(
     private _fb: FormBuilder,
@@ -42,12 +58,28 @@ export class LandingPageComponent implements OnInit {
     });
   }
 
-  // This method will be triggered when the user uploads a file
-  onFileChange(event: any) {
-    const file = event.target.files[0];
+  onUploadFile(event: any): void {
+    let files = event.target?.files;
+    if (!this.validateFile(files[0])) {
+      return;
+    }
+    this.onFileChange(files[0]);
+  }
 
+  validateFile(file: File): boolean {
+    if (file.type !== 'text/csv') {
+      this.fileInputChanger.nativeElement.value = '';
+      this._notificationService.warning('Warn!', 'File must be in CSV Format');
+      return false;
+    }
+    return true;
+  }
+
+  // This method will be triggered when the user uploads a file
+  onFileChange(file: any) {
     if (file) {
       this.isLoading = true;
+      this.headers = [];
 
       const reader = new FileReader();
       reader.onload = (e: any) => {
@@ -58,6 +90,9 @@ export class LandingPageComponent implements OnInit {
 
           // Extract the headers (keys) from the first object
           this.headers = Object.keys(jsonData[0]);
+          this.headers.forEach((item) => {
+            this.form.addControl(`${item}`, new FormControl(false));
+          });
 
           this.isLoading = false;
           this.isFileReadingComplete = true;
@@ -98,12 +133,12 @@ export class LandingPageComponent implements OnInit {
   // Event handler for checkbox change
   onColumnSelectionChange(column: string, event: any) {
     let existingValue = this.form.controls['columns'].value;
-    if (event.target.checked) {
+    if (event) {
       existingValue.push(column);
-      this.form.controls['columns'].setValue(existingValue);
     } else {
       existingValue = existingValue.filter((c: any) => c !== column);
     }
+    this.form.controls['columns'].setValue(existingValue);
   }
 
   // Finalize the columns and emit the filtered data
@@ -119,7 +154,7 @@ export class LandingPageComponent implements OnInit {
       this.actionEmitter.emit({
         action: 'columns',
         data: this.form.controls['columns'].value,
-        headers: this.headers
+        headers: this.headers,
       });
     }
   }

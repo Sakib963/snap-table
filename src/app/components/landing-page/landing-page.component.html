@@ -4,7 +4,7 @@
     <div class="text-center space-y-6">
       <img
         class="w-1/2 mx-auto"
-        src="/assets/images/read_notes.svg"
+        src="./assets/images/read_notes.svg"
         alt="File Svg"
       />
       <h2 class="text-6xl font-bold text-[#333333]">
@@ -20,21 +20,27 @@
       <div class="bg-[#D9DBE9] shadow-lg rounded-3xl p-8 text-center lg:w-2/3">
         <!-- Input -->
         <div *ngIf="!isLoading && !isFileReadingComplete" class="space-y-6">
-          <iframe
-            class="mx-auto"
-            src="https://lottie.host/embed/e51c7baa-35b0-4ce9-becc-072be61c59dd/YgIDetG7Y5.json"
-          ></iframe>
-          <label
-            class="cursor-pointer flex flex-col items-center bg-[#303B91] text-white py-3 px-6 rounded-full hover:bg-[#222C76] transition duration-300"
+          <div class="flex justify-center items-center">
+            <div>
+              <iframe
+                class="mx-auto pointer-events-none"
+                src="https://lottie.host/embed/e51c7baa-35b0-4ce9-becc-072be61c59dd/YgIDetG7Y5.json"
+                frameborder="0"
+              ></iframe>
+            </div>
+          </div>
+          <input
+            #inputChanger
+            type="file"
+            accept=".csv"
+            (change)="onUploadFile($event)"
+          />
+          <button
+            (click)="inputChanger.click()"
+            class="w-full cursor-pointer flex flex-col items-center bg-[#303B91] text-white py-3 px-6 rounded-full hover:bg-[#222C76] transition duration-300"
           >
-            <input
-              type="file"
-              class="hidden"
-              (change)="onFileChange($event)"
-              accept=".csv"
-            />
             <span class="text-lg">Upload CSV File</span>
-          </label>
+          </button>
         </div>
 
         <!-- Loading -->
@@ -51,19 +57,18 @@
             <h3 class="text-2xl font-bold text-[#333333] mb-4">
               Select Columns to Display:
             </h3>
-            <form [formGroup]="form" (ngSubmit)="onSubmitSelection($event)">
+            <form
+              [formGroup]="form"
+              nz-form
+              (ngSubmit)="onSubmitSelection($event)"
+            >
               <div class="mb-4 space-y-4">
                 <div class="flex flex-wrap gap-4 my-10">
                   <div
                     *ngFor="let header of headers; let i = index"
                     class="flex items-center gap-2"
                   >
-                    <input
-                      type="checkbox"
-                      (change)="onColumnSelectionChange(header, $event)"
-                      class="h-5 w-5 cursor-pointer"
-                    />
-                    <label class="text-lg">{{ header }}</label>
+                    <label nz-checkbox [formControlName]="header" (ngModelChange)="onColumnSelectionChange( header ,$event)"  style="font-size: 16px;">{{header}}</label>
                   </div>
                 </div>
               </div>

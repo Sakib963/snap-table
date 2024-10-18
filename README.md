@@ -11,14 +11,14 @@ Welcome to **SnapTable**, a simple and powerful web app that allows you to easil
 
 ## 📑 Table of Contents
 
-- [✨ Features](#✨-features)
-- [💡 How It Works](#💡-how-it-works)
-- [🎥 Demo](#🎥-demo)
-- [⚡️ Installation](#⚡️-installation)
-- [🖱 Usage](#🖱-usage)
-- [🤝 Contributing](#🤝-contributing)
-- [🙏 Acknowledgments](#🙏-acknowledgments)
-- [🚀 Get Involved](#🚀-get-involved)
+- [✨ Features](#-features)
+- [💡 How It Works](#-how-it-works)
+- [🎥 Demo](#-demo)
+- [⚡️ Installation](#-installation)
+- [🖱 Usage](#-usage)
+- [🤝 Contributing](#-contributing)
+- [🙏 Acknowledgments](#-acknowledgments)
+- [🚀 Get Involved](#-get-involved)
 
 
 ---

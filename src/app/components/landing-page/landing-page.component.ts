@@ -90,9 +90,7 @@ export class LandingPageComponent implements OnInit {
 
           // Extract the headers (keys) from the first object
           this.headers = Object.keys(jsonData[0]);
-          this.headers.forEach((item) => {
-            this.form.addControl(`${item}`, new FormControl(false));
-          });
+          this.updateFormControls('add');
 
           this.isLoading = false;
           this.isFileReadingComplete = true;
@@ -159,7 +157,25 @@ export class LandingPageComponent implements OnInit {
     }
   }
 
-  updateAllChecked(): void {
-    // this.indeterminate = false;
+  handleDifferentFileClick(): void {
+    this.isFileReadingComplete = false;
+    this.updateFormControls('remove');
+    this.headers = [];
+    this.selectedColumns = [];
   }
+
+  updateFormControls(action: 'add' | 'remove') {
+    this.headers.forEach((item) => {
+      if (action === 'add') {
+        if (!this.form.contains(`${item}`)) {  // Avoid duplicate addition
+          this.form.addControl(`${item}`, new FormControl(false));
+        }
+      } else if (action === 'remove') {
+        if (this.form.contains(`${item}`)) {
+          this.form.removeControl(`${item}`);
+        }
+      }
+    });
+  }
+  
 }

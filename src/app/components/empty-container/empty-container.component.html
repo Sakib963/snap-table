@@ -1,0 +1,24 @@
+<nz-empty
+  class="p-10"
+  [nzNotFoundContent]="contentTpl"
+  [nzNotFoundFooter]="footerTpl"
+>
+  <ng-template #contentTpl>
+    <span
+      >It is not possible to complete the task at this moment! Try again
+      later.</span
+    >
+  </ng-template>
+  <ng-template #footerTpl>
+    <div class="w-full flex justify-center">
+      <button
+        class="primary-button flex items-center gap-2"
+        type="button"
+        (click)="reloadComponent()"
+      >
+        <span nz-icon nzType="reload"></span>
+        Reload
+      </button>
+    </div>
+  </ng-template>
+</nz-empty>

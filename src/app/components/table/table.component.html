@@ -1,0 +1,204 @@
+<div *ngIf="tableConfig" class="bg-white rounded-sm border-b border-gray-300">
+  <ng-container *ngTemplateOutlet="filter"></ng-container>
+  <div class="grid grid-cols-1 md:grid-cols-2 gap-1 p-2">
+    <div *ngIf="tableConfig?.table_title" class="pl-2">
+      <p class="font-bold text-lg">{{ tableConfig?.table_title }}</p>
+    </div>
+    <div class="flex items-center justify-end gap-1">
+      <button
+        class="flex items-center mr-1"
+        nz-button
+        nzDanger
+        nzType="text"
+        [nzSize]="'small'"
+        (click)="onReset()"
+      >
+        <span nz-icon nzType="undo"></span>
+        Reset
+      </button>
+      <button
+        class="flex items-center"
+        nz-button
+        nzType="text"
+        [nzSize]="'small'"
+        (click)="onRefresh()"
+      >
+        <span nz-icon nzType="sync"></span>
+        Reload
+      </button>
+    </div>
+  </div>
+  <nz-divider nzType="horizontal"></nz-divider>
+  <nz-table
+    nzShowSizeChanger
+    nzTableLayout="fixed"
+    [nzData]="tableData?.rows"
+    [nzFrontPagination]="false"
+    [nzLoading]="queryLoading"
+    [nzLoadingIndicator]="querySpinner"
+    [nzPageSizeOptions]="tableConfig?.page_size_option"
+    [nzScroll]="{ x: '100%' }"
+    [nzShowTotal]="rangeTemplate"
+    [nzTotal]="tableData?.total"
+    [(nzPageIndex)]="pageIndex"
+    [(nzPageSize)]="pageSize"
+    (nzPageIndexChange)="onQueryParamsChange($event, 'page_index')"
+    (nzPageSizeChange)="onQueryParamsChange($event, 'page_size')"
+  >
+    <thead>
+      <tr>
+        <th [nzAlign]="'center'" [nzWidth]="'5%'">#</th>
+        <ng-container *ngFor="let column of tableConfig?.columns">
+          <th
+            [nzAlign]="column['alignment']"
+            [nzColumnKey]="column['source_column']"
+            [nzRight]="column['column_type'] === 'action'"
+            [nzSortFn]="column['sorting']"
+            [nzWidth]="column['width']"
+            (nzSortOrderChange)="
+              onQueryParamsChange(
+                $event,
+                'sort_order',
+                column['source_column'],
+                column['column_type']
+              )
+            "
+          >
+            {{ column["display_name"] }}
+          </th>
+        </ng-container>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let row of tableData?.rows; let index = index">
+        <td [nzAlign]="'center'" [nzEllipsis]="true">
+          {{ offset + index + 1 }}
+        </td>
+        <ng-container *ngFor="let column of tableConfig?.columns">
+          <ng-container [ngSwitch]="column['column_type']">
+            <td
+              *ngSwitchCase="'text'"
+              [nzAlign]="column['alignment']"
+              [nzEllipsis]="true"
+            >
+              <span
+                nz-popover
+                nzPopoverOverlayClassName="max-w-[400px] break-all"
+                nzPopoverPlacement="left"
+                [nzPopoverContent]="row[column['source_column']]"
+                [nzPopoverTitle]="getPopoverTitle(column)"
+                >{{ row[column["source_column"]] }}</span
+              >
+            </td>
+            <td
+              *ngSwitchCase="'date'"
+              [nzAlign]="column['alignment']"
+              [nzEllipsis]="true"
+            >
+              <span
+                nz-tooltip
+                nzTooltipPlacement="bottom"
+                [nzTooltipTitle]="getTooltipTitle(column, row)"
+                >{{ row[column["source_column"]] }}</span
+              >
+            </td>
+            <td
+              *ngSwitchCase="'decimal'"
+              [nzAlign]="column['alignment']"
+              [nzEllipsis]="true"
+            >
+              <span
+                nz-tooltip
+                nzTooltipPlacement="bottom"
+                [nzTooltipTitle]="getTooltipTitle(column, row)"
+                >{{ row[column["source_column"]] }}</span
+              >
+            </td>
+            <td
+              *ngSwitchCase="'status'"
+              nz-tooltip
+              nzTooltipPlacement="bottom"
+              [nzAlign]="column['alignment']"
+              [nzEllipsis]="true"
+              [nzTooltipTitle]="getTooltipTitle(column, row)"
+            >
+              <span
+                [ngStyle]="
+                  getTextColorAccordionToStatus(
+                    column.text_color,
+                    row[column?.source_column]
+                  )
+                "
+                >{{ row[column["source_column"]] }}</span
+              >
+            </td>
+            <td
+              *ngSwitchCase="'action'"
+              [nzAlign]="column['alignment']"
+              [nzRight]="true"
+            >
+              <span
+                nz-dropdown
+                [nzDropdownMenu]="actions"
+                [nzPlacement]="'bottomCenter'"
+              >
+                <span class="cursor-pointer" nz-icon>
+                  <img alt="kebab icon" src="assets/images/kebab-menu.svg" />
+                </span>
+              </span>
+              <nz-dropdown-menu #actions="nzDropdownMenu">
+                <ul nz-menu>
+                  <ng-container *ngFor="let action of column['action_names']">
+                    <li
+                      *ngIf="getActionAccordingToStatus(action, row)"
+                      nz-menu-item
+                      (click)="onAction(action.name, row)"
+                    >
+                      <span
+                        class="cursor-pointer mr-1"
+                        nz-icon
+                        nzTheme="outline"
+                        [nzType]="action.icon"
+                      >
+                      </span>
+                      {{ extractActionName(action.name) }}
+                    </li>
+                  </ng-container>
+                </ul>
+              </nz-dropdown-menu>
+            </td>
+          </ng-container>
+        </ng-container>
+      </tr>
+    </tbody>
+  </nz-table>
+  <ng-template #querySpinner>
+    <div class="w-full h-full flex items-center justify-center">
+      <svg
+        class="h-8 w-8 animate-spin text-green-600"
+        fill="none"
+        viewBox="0 0 24 24"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        <circle
+          class="opacity-25"
+          cx="12"
+          cy="12"
+          r="10"
+          stroke="currentColor"
+          stroke-width="4"
+        ></circle>
+        <path
+          class="opacity-75"
+          d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+          fill="currentColor"
+        ></path>
+      </svg>
+    </div>
+  </ng-template>
+  <ng-template #rangeTemplate let-range="range" let-total
+    >{{ range[0] }}-{{ range[1] }} of {{ total }} items</ng-template
+  >
+</div>
+
+<empty-container *ngIf="!tableConfig"></empty-container>

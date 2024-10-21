@@ -20,6 +20,7 @@ import { Constants } from 'src/app/core/constants/constant';
 import { ActivatedRoute, Router } from '@angular/router';
 import { map } from 'rxjs';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { NzPaginationModule } from 'ng-zorro-antd/pagination';
 
 @Component({
   selector: 'app-table',
@@ -34,6 +35,7 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
     NzDropDownModule,
     EmptyContainerComponent,
     NzPopoverModule,
+    NzPaginationModule
   ],
   templateUrl: './table.component.html',
   styleUrls: ['./table.component.scss'],
@@ -75,6 +77,11 @@ export class TableComponent {
         this.pageSize = res.pageSize;
       }
     });
+  }
+
+  ngOnInit(): any {
+    console.log(this.tableData, 'from table component');
+    console.log(this.tableConfig, 'from table component');
   }
 
   getActionAccordingToStatus(action: any, row: any): boolean {
@@ -121,10 +128,7 @@ export class TableComponent {
     if (column_type === 'translate') {
       sort_column = `${source_column}`;
     }
-    this.queryLoading = true;
-    setTimeout(() => {
-      this.queryLoading = false;
-    }, 500);
+    this.showLoadingAnimation();
 
     if (type === 'page_size') {
       this.pageSize = params;
@@ -163,6 +167,7 @@ export class TableComponent {
 
   onRefresh(): void {
     this.refreshEmitter.emit(true);
+    this.showLoadingAnimation();
   }
 
   onReset(): void {
@@ -179,6 +184,14 @@ export class TableComponent {
       ''
     );
     this.resetEmitter.emit(true);
+    this.showLoadingAnimation();
+  }
+
+  showLoadingAnimation(): any {
+    this.queryLoading = true;
+    setTimeout(() => {
+      this.queryLoading = false;
+    }, 300);
   }
 
   extractActionName(actionKey: string): string {

@@ -1,4 +1,4 @@
-<table>
+<!-- <table>
   <thead>
     <tr>
       <th *ngFor="let col of columns">{{ col }}</th>
@@ -9,7 +9,18 @@
       <td *ngFor="let col of columns">{{ row[col] }}</td>
     </tr>
   </tbody>
-</table>
+</table> -->
+<div class="border border-gray-300 p-5 rounded-md m-20">
+  <app-table
+    *ngIf="tableConfig && tableData"
+    [tableConfig]="tableConfig"
+    [tableData]="tableData"
+    (queryParamsEmitter)="executeQueryParamsChange($event)"
+    (refreshEmitter)="executeRefresh($event)"
+    (resetEmitter)="executeReset($event)"
+  >
+  </app-table>
+</div>
 <!-- Go Back Button -->
 <button
   (click)="goBack()"

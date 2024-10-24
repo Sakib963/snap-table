@@ -167,7 +167,8 @@ export class LandingPageComponent implements OnInit {
   updateFormControls(action: 'add' | 'remove') {
     this.headers.forEach((item) => {
       if (action === 'add') {
-        if (!this.form.contains(`${item}`)) {  // Avoid duplicate addition
+        if (!this.form.contains(`${item}`)) {
+          // Avoid duplicate addition
           this.form.addControl(`${item}`, new FormControl(false));
         }
       } else if (action === 'remove') {
@@ -177,5 +178,27 @@ export class LandingPageComponent implements OnInit {
       }
     });
   }
-  
+
+  loadSampleFile(filePath: string): void {
+    this.isFileReadingComplete = false;
+    this.updateFormControls('remove');
+    this.headers = [];
+    this.selectedColumns = [];
+    fetch(filePath)
+      .then((response) => response.blob())
+      .then((blob) => {
+        const file = new File(
+          [blob],
+          filePath.split('/').pop() || 'sample.csv',
+          { type: 'text/csv' }
+        );
+        this.onFileChange(file)
+      })
+      .catch(() => {
+        this._notificationService.error(
+          'Error!',
+          'There was an error loading the file. Please try again.'
+        );
+      });
+  }
 }

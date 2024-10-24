@@ -1,25 +1,25 @@
 <div class="h-screen flex justify-center items-center bg-[#E7EAEF]">
   <div class="lg:w-2/3 mx-auto grid lg:grid-cols-2 gap-10">
     <!-- Left Side -->
-    <div class="text-center space-y-6">
+    <div class="text-center space-y-3 lg:space-y-6">
       <img
-        class="w-1/2 mx-auto"
+        class="w-2/6 lg:w-1/2 mx-auto"
         src="./assets/images/read_notes.svg"
         alt="File Svg"
       />
-      <h2 class="text-6xl font-bold text-[#333333]">
+      <h2 class="text-3xl lg:text-6xl font-bold text-[#333333]">
         Convert CSV <span class="block">to Table Instantly</span>
       </h2>
-      <p class="text-lg">
+      <p class="text-sm lg:text-lg mx-4 lg:mx-0">
         Effortlessly upload your CSV file, select the columns you want, and
         generate a customized table in seconds—no servers or coding required!
       </p>
     </div>
-
+    <!-- Right Side -->
     <div>
       <div class="flex justify-center items-center">
         <div
-          class="bg-[#D9DBE9] shadow-lg rounded-3xl p-8 text-center lg:w-2/3"
+          class="bg-[#D9DBE9] shadow-lg rounded-3xl mx-4 lg:mx-0 p-4 lg:p-8 text-center lg:w-2/3"
         >
           <!-- Input -->
           <div *ngIf="!isLoading && !isFileReadingComplete" class="space-y-6">
@@ -105,15 +105,44 @@
       </div>
 
       <!-- Sample File -->
-      <div class="flex justify-between items-center mt-4 lg:w-2/3 mx-auto">
+      <div class="flex justify-between items-center mt-4 lg:w-2/3 lg:mx-auto mx-4">
         <div class="">
-          <p class="text-lg font-bold text-start text-[#333333]">No Csv?</p>
-          <p class="text-lg font-bold text-start text-[#333333]">Try one of these:</p>
+          <p class="text-balance lg:text-lg font-bold text-start text-[#333333]">No CSV?</p>
+          <p class="text-balance lg:text-lg font-bold text-start text-[#333333]">
+            Try one of these:
+          </p>
         </div>
         <div class="flex gap-4">
-          <div class="p-8 rounded-lg shadow-md border border-gray-400"></div>
-          <div class="p-8 rounded-lg shadow-md border border-gray-400"></div>
-          <div class="p-8 rounded-lg shadow-md border border-gray-400"></div>
+          <div
+            nzTooltipTitle="Sample Employee File"
+            nzTooltipPlacement="bottom"
+            nz-tooltip
+            class="flex justify-center items-center h-14 w-14 bg-[#D9DBE9] rounded-lg border border-gray-400 cursor-pointer"
+            (click)="loadSampleFile('assets/files/employee.csv')"
+          >
+            <img
+              src="./assets/images/employee.svg"
+              alt="Sample Employee File"
+            />
+          </div>
+          <div
+            nzTooltipTitle="Sample Product File"
+            nzTooltipPlacement="bottom"
+            nz-tooltip
+            class="flex justify-center items-center h-14 w-14 bg-[#D9DBE9] rounded-lg border border-gray-400 cursor-pointer"
+            (click)="loadSampleFile('assets/files/product.csv')"
+          >
+            <img src="./assets/images/product.svg" alt="Sample Product File" />
+          </div>
+          <div
+            nzTooltipTitle="Sample Student File"
+            nzTooltipPlacement="bottom"
+            nz-tooltip
+            class="flex justify-center items-center h-14 w-14 bg-[#D9DBE9] rounded-lg border border-gray-400 cursor-pointer"
+            (click)="loadSampleFile('assets/files/student.csv')"
+          >
+            <img src="./assets/images/students.svg" alt="Sample Student File" />
+          </div>
         </div>
       </div>
     </div>

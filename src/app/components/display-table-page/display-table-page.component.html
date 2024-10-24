@@ -10,21 +10,27 @@
     </tr>
   </tbody>
 </table> -->
-<div class="border border-gray-300 p-5 rounded-md m-20">
-  <app-table
-    *ngIf="tableConfig && tableData"
-    [tableConfig]="tableConfig"
-    [tableData]="tableData"
-    (queryParamsEmitter)="executeQueryParamsChange($event)"
-    (refreshEmitter)="executeRefresh($event)"
-    (resetEmitter)="executeReset($event)"
-  >
-  </app-table>
+<div class="h-screen bg-[#E7EAEF] px-10 py-5">
+  <div class="flex justify-between items-center mb-10 gap-4">
+    <img
+      (click)="goBack()"
+      class="p-5 rounded-full hover:bg-white cursor-pointer transition duration-300 hover:shadow-lg"
+      src="./assets/images/arrow-left.svg"
+      alt="Go Back"
+    />
+    <h2 class="text-xl lg:text-3xl font-bold text-[#333333] w-full">
+      Convert CSV to Table Instantly
+    </h2>
+  </div>
+  <div class="space-y-6">
+    <app-table
+      *ngIf="tableConfig && tableData"
+      [tableConfig]="tableConfig"
+      [tableData]="tableData"
+      (queryParamsEmitter)="executeQueryParamsChange($event)"
+      (refreshEmitter)="executeRefresh($event)"
+      (resetEmitter)="executeReset($event)"
+    >
+    </app-table>
+  </div>
 </div>
-<!-- Go Back Button -->
-<button
-  (click)="goBack()"
-  class="mt-4 bg-blue-500 text-white py-2 px-4 rounded"
->
-  Go Back
-</button>

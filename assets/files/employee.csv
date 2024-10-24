@@ -1,0 +1,11 @@
+ID,FullName,Age,Designation,Department,Salary (BDT),DateOfJoining,Location
+EMP-001,John Doe,29,Software Engineer,IT,"55,000",2021-06-15,Dhaka
+EMP-002,Jane Smith,25,Data Analyst,Analytics,"48,000",2020-03-12,Chittagong
+EMP-003,Ahmed Khan,35,Project Manager,Management,"70,000",2018-09-25,Dhaka
+EMP-004,Maria Lopez,28,UI/UX Designer,Design,"52,000",2019-11-05,Sylhet
+EMP-005,David Lee,40,Senior Developer,IT,"80,000",2016-02-20,Khulna
+EMP-006,Aisha Patel,27,QA Engineer,Testing,"47,000",2021-01-22,Rajshahi
+EMP-007,Karim Rahman,32,Business Analyst,Business,"58,000",2017-07-30,Dhaka
+EMP-008,Mina Kim,29,Marketing Specialist,Marketing,"49,000",2022-04-18,Chittagong
+EMP-009,Omar Ali,38,HR Manager,Human Resources,"68,000",2015-05-10,Dhaka
+EMP-010,Sara Ahmed,26,Graphic Designer,Design,"45,000",2020-10-29,Barisal

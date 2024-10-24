@@ -1,0 +1,11 @@
+StudentID,FullName,Course,Semester,Grade,Attendance (%),AssignmentScore,ExamScore,FinalGrade
+ST-001,Arif Hossain,Math 101,Fall 2023,A,95,85,90,A
+ST-002,Nafisa Ahmed,Physics 201,Fall 2023,B+,88,78,85,B+
+ST-003,Shakib Rahman,Chemistry 101,Spring 2023,B,90,70,75,B
+ST-004,Maria Khan,Computer Science,Spring 2023,A-,92,88,82,A-
+ST-005,Fardin Alam,History 102,Fall 2023,B+,85,80,78,B+
+ST-006,Riya Sultana,Economics 202,Spring 2023,A,97,92,88,A
+ST-007,Tanvir Islam,English 101,Fall 2023,A-,93,84,80,A-
+ST-008,Sabrina Akter,Biology 101,Spring 2023,B,87,75,73,B
+ST-009,Zubair Khan,Sociology 201,Fall 2023,B,80,65,70,B
+ST-010,Sumaiya Rahman,Philosophy 101,Spring 2023,A,99,90,93,A

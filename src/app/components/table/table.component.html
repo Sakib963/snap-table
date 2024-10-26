@@ -1,4 +1,7 @@
-<div *ngIf="tableConfig" class="bg-white border-b border-gray-300 rounded-lg p-4">
+<div
+  *ngIf="tableConfig"
+  class="bg-white border-b border-gray-300 rounded-lg p-4"
+>
   <ng-container *ngTemplateOutlet="filter"></ng-container>
   <div class="grid grid-cols-1 md:grid-cols-2 gap-1 p-2">
     <div *ngIf="tableConfig?.table_title" class="pl-2">

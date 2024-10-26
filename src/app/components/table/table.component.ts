@@ -35,7 +35,7 @@ import { NzPaginationModule } from 'ng-zorro-antd/pagination';
     NzDropDownModule,
     EmptyContainerComponent,
     NzPopoverModule,
-    NzPaginationModule
+    NzPaginationModule,
   ],
   templateUrl: './table.component.html',
   styleUrls: ['./table.component.scss'],
@@ -65,7 +65,7 @@ export class TableComponent {
 
   constructor(
     private _activatedRoute: ActivatedRoute,
-    private _destroyRef: DestroyRef,
+    private _destroyRef: DestroyRef
   ) {
     const state$ = this._activatedRoute.paramMap.pipe(
       map(() => window.history.state)
@@ -79,10 +79,7 @@ export class TableComponent {
     });
   }
 
-  ngOnInit(): any {
-    console.log(this.tableData, 'from table component');
-    console.log(this.tableConfig, 'from table component');
-  }
+  ngOnInit(): any {}
 
   getActionAccordingToStatus(action: any, row: any): boolean {
     return action.status ? action.status.includes(row.status) : true;

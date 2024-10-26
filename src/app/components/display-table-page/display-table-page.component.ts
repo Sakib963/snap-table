@@ -26,7 +26,7 @@ import { NgZorroCustomModule } from 'src/app/library/ng-zorro-custom/ng-zorro-cu
 })
 export class DisplayTablePageComponent implements OnInit {
   @Input() parsedData: any[] = [];
-  @Input() headers: any[] = [];
+  @Input() headers: string[] = [];
   @Input() data: any[] = [];
   @Input() columns: string[] = [];
   @Output() actionEmitter = new EventEmitter<any>();
@@ -39,173 +39,174 @@ export class DisplayTablePageComponent implements OnInit {
   form!: FormGroup;
 
   constructor(
-    private _fb: FormBuilder,
-    private _notificationService: NzNotificationService
+    private fb: FormBuilder,
+    private notificationService: NzNotificationService
   ) {}
 
   ngOnInit(): void {
     this.form = this.createForm();
-    this.setNewTableInstance();
+    this.initializeTable();
   }
 
   createForm(): FormGroup {
-    return this._fb.group({
+    return this.fb.group({
       columns: [this.columns, [Validators.required]],
     });
   }
 
+  // Form Controls for Each Header Based on Selection
   updateFormControls(action: 'add' | 'remove') {
     this.headers.forEach((item) => {
-      if (action === 'add') {
-        if (!this.form.contains(`${item}`)) {
-          // Avoid duplicate addition
-          this.form.addControl(`${item}`, new FormControl(false));
-        }
-      } else if (action === 'remove') {
-        if (this.form.contains(`${item}`)) {
-          this.form.removeControl(`${item}`);
-        }
+      const controlExists = this.form.contains(item);
+      if (action === 'add' && !controlExists) {
+        this.form.addControl(item, new FormControl(false));
+      } else if (action === 'remove' && controlExists) {
+        this.form.removeControl(item);
       }
     });
   }
 
+  // Handle Column Selection and Submit
   onSubmitSelection(event: Event) {
     event.preventDefault();
-    let newColumns = this.form.controls['columns'].value;
-    console.log(newColumns);
+    const selectedColumns = this.form.controls['columns'].value;
 
-    if (!newColumns.length) {
-      this._notificationService.warning(
-        'Warning!',
+    if (!selectedColumns.length) {
+      this.showWarning(
         'You must choose at least one column before proceeding.'
       );
     } else {
-      this.columns = [];
-      this.columns = newColumns;
-      this.setNewTableInstance();
+      this.columns = selectedColumns;
+      this.initializeTable();
     }
   }
 
-  onColumnSelectionChange(column: string, event: any) {
-    let existingValue = this.form.controls['columns'].value;
-    if (event) {
-      existingValue.push(column);
-    } else {
-      existingValue = existingValue.filter((c: any) => c !== column);
-    }
-    this.form.controls['columns'].setValue(existingValue);
+  // Column Selection Change Handler
+  onColumnSelectionChange(column: string, isSelected: boolean) {
+    let currentSelection = this.form.controls['columns'].value;
+    currentSelection = isSelected
+      ? [...currentSelection, column]
+      : currentSelection.filter((c: string) => c !== column);
+    this.form.controls['columns'].setValue(currentSelection);
   }
 
-  constructDefaultConfig(): any {
-    this.tableConfig = {
+  // Construct Default and Dynamic Table Configuration
+  initializeTable(): void {
+    this.updateFormControls('remove');
+    this.constructFilteredData();
+    this.resetPayload();
+
+    this.tableConfig = this.constructDefaultTableConfig();
+    this.constructColumnConfig();
+
+    this.refreshTableData();
+    this.updateFormBasedOnColumns();
+  }
+
+  // Configure Default Table Settings
+  constructDefaultTableConfig(): any {
+    return {
       render_type: 'all',
       table_title: 'Csv To Table',
       page_size_option: [10, 20, 30, 50],
-      filter_config: {
-        filter_by: [],
-      },
+      filter_config: { filter_by: [] },
     };
   }
 
-  constructTableConfig(): any {
-    let construedColumns: any = [];
-    this.columns.map((item: any) => {
-      let itemConfig = {
-        source_column: item,
-        display_name: item,
-        alignment: 'left',
-        width: '120px',
-        tooltip: true,
-        sorting: true,
-        column_type: 'text',
-        popover: true,
-      };
-      construedColumns.push(itemConfig);
-    });
-    this.tableConfig['columns'] = construedColumns;
+  // Add Dynamic Column Configuration for the Table
+  constructColumnConfig(): void {
+    this.tableConfig['columns'] = this.columns.map((item) => ({
+      source_column: item,
+      display_name: item,
+      alignment: 'left',
+      width: '120px',
+      tooltip: true,
+      sorting: true,
+      column_type: 'text',
+      popover: true,
+    }));
   }
 
+  // Slice or Sort Data Based on Payload
   loadPayloadChangedData(): void {
     const { offset, limit, sort_column, sort_order } = this.payload;
-    let dataToDisplay = [...this.data];
+    let displayData = [...this.data];
 
     if (sort_column && sort_order) {
-      dataToDisplay.sort((a, b) => {
-        const valueA = a[sort_column];
-        const valueB = b[sort_column];
-
-        if (valueA === valueB) return 0;
-
-        if (sort_order === 'asc') {
-          return valueA > valueB ? 1 : -1;
-        } else if (sort_order === 'desc') {
-          return valueA < valueB ? 1 : -1;
-        }
-
-        return 0;
-      });
+      displayData = this.sortData(displayData, sort_column, sort_order);
     }
-    this.tableData['rows'] = dataToDisplay.slice(offset, offset + limit);
+
+    this.tableData['rows'] = displayData.slice(offset, offset + limit);
+  }
+
+  sortData(data: any[], column: string, order: string) {
+    return data.sort((a, b) => {
+      const [valueA, valueB] = [a[column], b[column]];
+      if (valueA === valueB) return 0;
+      return order === 'asc'
+        ? valueA > valueB
+          ? 1
+          : -1
+        : valueA < valueB
+        ? 1
+        : -1;
+    });
   }
 
   executeQueryParamsChange(queryParams: any): void {
-    console.log(queryParams, 'executeQueryParamsChange');
-
     this.payload = { ...this.payload, ...queryParams };
     this.loadPayloadChangedData();
   }
 
   executeRefresh(isRefresh: boolean): void {
-    isRefresh && this.loadPayloadChangedData();
+    if (isRefresh) this.loadPayloadChangedData();
   }
 
   executeReset(isReset: boolean): void {
     if (isReset) {
       this.isReset = true;
-      this.setNewTableInstance();
+      this.initializeTable();
     }
   }
 
-  setNewTableInstance(): any {
-    this.updateFormControls('remove');
-    this.constructNewTableData();
-    this.payload = { offset: 0, limit: Constants.PAGE_SIZE };
-    this.tableConfig = null;
-    this.tableData = [];
-    this.constructDefaultConfig();
-    this.constructTableConfig();
+  // Filter Data Based on Selected Columns
+  constructFilteredData(): void {
+    this.data = this.parsedData.map((row) =>
+      this.columns.reduce((filteredRow: any, col) => {
+        filteredRow[col] = row[col];
+        return filteredRow;
+      }, {})
+    );
+  }
 
+  resetPayload() {
+    this.payload = { offset: 0, limit: Constants.PAGE_SIZE };
+  }
+
+  refreshTableData() {
     this.loadPayloadChangedData();
     this.tableData['total'] = this.parsedData.length;
-
-    this.constructForm();
-    console.log(this.form);
   }
 
-  constructNewTableData(): any {
-    // Filter the data based on selected columns
-    this.data = this.parsedData.map((row) => {
-      let filteredRow: any = {};
-      this.columns.forEach((col) => {
-        filteredRow[col] = row[col];
-      });
-      return filteredRow;
-    });
-  }
+  // Update Form Based on Current Column Selection
+  updateFormBasedOnColumns(): void {
+    this.headers.forEach((header) => {
+      const isChecked = this.columns.includes(header);
+      const control = this.form.get(header);
 
-  constructForm(): any {
-    this.headers.forEach((item) => {
-      const isChecked = this.columns.includes(item);
-
-      if (!this.form.contains(item)) {
-        this.form.addControl(item, new FormControl(isChecked));
+      if (control) {
+        control.setValue(isChecked);
       } else {
-        this.form.get(item)?.setValue(isChecked);
+        this.form.addControl(header, new FormControl(isChecked));
       }
     });
   }
 
+  showWarning(message: string) {
+    this.notificationService.warning('Warning!', message);
+  }
+
   goBack() {
-    this.actionEmitter.emit({ action: 'back', value: null });
+    this.actionEmitter.emit({ action: 'back' });
   }
 }

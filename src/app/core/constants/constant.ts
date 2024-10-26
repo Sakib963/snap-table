@@ -1,3 +1,3 @@
 export class Constants {
-  static PAGE_SIZE = 5;
+  static PAGE_SIZE = 10;
 }

@@ -18,7 +18,7 @@ import {
 } from '@angular/forms';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
 import { NgZorroCustomModule } from 'src/app/library/ng-zorro-custom/ng-zorro-custom.module';
-import { NzCheckboxComponent } from 'ng-zorro-antd/checkbox';
+import * as csvtojson from 'csvtojson';
 
 @Component({
   selector: 'app-landing-page',
@@ -82,20 +82,28 @@ export class LandingPageComponent implements OnInit {
       this.headers = [];
 
       const reader = new FileReader();
-      reader.onload = (e: any) => {
+      reader.onload = async (e: any) => {
         const csvText = e.target.result;
 
-        setTimeout(() => {
-          const jsonData = this.csvToJson(csvText);
+        try {
+          const jsonData = await csvtojson().fromString(csvText);
+          console.log(jsonData, 'jsonData');
 
           // Extract the headers (keys) from the first object
-          this.headers = Object.keys(jsonData[0]);
+          this.headers = jsonData.length > 0 ? Object.keys(jsonData[0]) : [];
           this.updateFormControls('add');
 
           this.isLoading = false;
           this.isFileReadingComplete = true;
           this.actionEmitter.emit({ action: 'file_upload', data: jsonData });
-        }, 2000);
+        } catch (error) {
+          this._notificationService.error(
+            'Error!',
+            'There was an error parsing the CSV file. Please try again.'
+          );
+          this.isLoading = false;
+          this.isFileReadingComplete = false;
+        }
       };
 
       reader.onerror = (error) => {
@@ -192,7 +200,7 @@ export class LandingPageComponent implements OnInit {
           filePath.split('/').pop() || 'sample.csv',
           { type: 'text/csv' }
         );
-        this.onFileChange(file)
+        this.onFileChange(file);
       })
       .catch(() => {
         this._notificationService.error(

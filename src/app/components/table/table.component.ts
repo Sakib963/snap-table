@@ -21,6 +21,9 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { map } from 'rxjs';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { NzPaginationModule } from 'ng-zorro-antd/pagination';
+import { FormControl, ReactiveFormsModule } from '@angular/forms';
+import { NzFormModule } from 'ng-zorro-antd/form';
+import { NzInputModule } from 'ng-zorro-antd/input';
 
 @Component({
   selector: 'app-table',
@@ -36,6 +39,9 @@ import { NzPaginationModule } from 'ng-zorro-antd/pagination';
     EmptyContainerComponent,
     NzPopoverModule,
     NzPaginationModule,
+    NzFormModule,
+    ReactiveFormsModule,
+    NzInputModule
   ],
   templateUrl: './table.component.html',
   styleUrls: ['./table.component.scss'],
@@ -61,7 +67,12 @@ export class TableComponent {
   @Output() readonly resetEmitter: EventEmitter<boolean> = new EventEmitter(
     false
   );
+  @Output() readonly searchEmitter: EventEmitter<Object> = new EventEmitter(
+    undefined
+  );
   @ContentChild('filter') filter!: TemplateRef<any>;
+
+  searchText: FormControl = new FormControl(null)
 
   constructor(
     private _activatedRoute: ActivatedRoute,
@@ -79,7 +90,11 @@ export class TableComponent {
     });
   }
 
-  ngOnInit(): any {}
+  ngOnInit(): any {
+    this.searchText.valueChanges.subscribe((value: any) => {
+      this.searchEmitter.emit({searchText: this.searchText.value})
+    })
+  }
 
   getActionAccordingToStatus(action: any, row: any): boolean {
     return action.status ? action.status.includes(row.status) : true;

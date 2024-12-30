@@ -153,6 +153,19 @@ export class DisplayTablePageComponent implements OnInit {
     });
   }
 
+  executeSearchTextChange(event: any): any {
+    const searchText = event.searchText.toLowerCase();
+    if (searchText) {
+      const searchedData = this.parsedData.filter((item: any) => {
+        return Object.values(item).some((value) => {
+          return String(value).toLowerCase().includes(searchText);
+        });
+      });
+      this.tableData['rows'] = searchedData;
+      this.tableData['total'] = searchedData.length;
+    }
+  }
+
   executeQueryParamsChange(queryParams: any): void {
     this.payload = { ...this.payload, ...queryParams };
     this.loadPayloadChangedData();
